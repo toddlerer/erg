@@ -8,9 +8,6 @@ on:
 jobs:
   automatic-update:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: doc
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v4
@@ -18,11 +15,16 @@ jobs:
           python-version: "3.11"
       - uses: erg-lang/setup-erg@v2.1
       - run: |
+          cd doc
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
       - name: update summary
         run: |
+          git diff
+
           python scripts/sync_to_summary.py
+
+          git diff
 
           git add .
           git diff-index --quiet HEAD || git commit -m "Automatic update \`SUMMARY.md\`"
